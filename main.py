@@ -16,6 +16,43 @@ import requests
 from pathlib import Path
 import threading
 
+# Estou mantendo tudo em um arquivo só porque ainda não sei como vai ser para fazer o executavel, então
+# para evitar problemas preferi manter tudo em um lugar só.
+
+# Cada interface (UI) é uma classe, basta copiar uma e colar no claude.ai e descrever a nova interface que você
+# quer que ele crie, dado um bom prompt os resultados geralmente são bons. A maioria aqui foi gerado lá, depois
+# só ajusto o necessário e implemento a interação global entre as interfaces.
+
+# -----------------
+
+# Arquitetura da UI
+
+# Para o UI, as classes possuem dois metódos importantes: init e activate
+# no init passamos o master, a interface principal do programa que contém a nossa instância do banco de dados
+# é por essa instância que as demais interfaces possuem acesso ao banco de dados.
+
+# o activate é onde descrevemos a ui em si.
+
+# -----------------
+
+# Arquitetura do servidor
+
+# Aqui ainda não decidi se irei utilizar ngrok ou noip, mas isso muda apenas o backend, para o usuário a experiência
+# será a mesma: um botão na interface principal que ao apertar o endereço do server é copiado. Esse tipo de informação
+# será salvo diretamente no repositório.
+
+# -----------------
+
+# TODO
+# [ ] Criar sistema de autoupdate
+#       - Comparar versão atual (var global) com versão existente no json presente no github.
+#       - Caso desatualizado, prompt pedindo para atualizar (baixar nova versão e agendar por meio de uma thread
+#       - não deamon a exclusão da versão antiga, agendar também para o programa abrir após a exclusão da antiga)
+
+# [ ] Implementar ngrok/noip na configuração do servidor
+# [ ] Implementar copiar ip do server ao clicar botão na interface principal
+# [ ] Implementar download do launcher (e decidir qual launcher utilizar)
+# [ ] Implementar download e configuração do modpack
 
 class ConfiguracoesServidor:
     def __init__(self, master):
