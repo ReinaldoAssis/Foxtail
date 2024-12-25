@@ -5,8 +5,11 @@ from PIL import Image, ImageTk
 from ConfiguracoesServidor import ConfiguracoesServidor
 from ConfiguracoesMinecraft import ConfiguracoesMinecraft
 
-# Estou mantendo tudo em um arquivo só porque ainda não sei como vai ser para fazer o executavel, então
-# para evitar problemas preferi manter tudo em um lugar só.
+# !!!! IGNORAR: Estou mantendo tudo em um arquivo só porque ainda não sei como vai ser para fazer o executavel, então
+# para evitar problemas preferi manter tudo em um lugar só. !!!!
+
+# !!!! @UPDATE: Não é necessário manter tudo em um arquivo, estou dividindo agora com cada interface tendo seu arquivo.
+# gostaria de separar em pastas, mas isso complica a importação, por hora deixarei assim mesmo.
 
 # Cada interface (UI) é uma classe, basta copiar uma e colar no claude.ai e descrever a nova interface que você
 # quer que ele crie, dado um bom prompt os resultados geralmente são bons. A maioria aqui foi gerado lá, depois
