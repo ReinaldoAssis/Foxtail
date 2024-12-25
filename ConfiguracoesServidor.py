@@ -3,6 +3,7 @@ import platform
 import queue
 import signal
 import subprocess
+import socket  # Add this import
 from threading import Thread
 import tkinter as tk
 from tkinter import Tk, filedialog
@@ -23,7 +24,9 @@ class ConfiguracoesServidor:
             'server_name': 'Minecraft Server',
             'jar_path': '',
             'min_ram': '1G',
-            'max_ram': '4G'
+            'max_ram': '4G',
+            'host_ip': '',
+            'tunnel_address': ''
         }
         self.load_config()
 
@@ -61,7 +64,7 @@ class ConfiguracoesServidor:
             try:
                 line = self.log_queue.get_nowait()
                 self.log_text.insert(tk.END, line)
-                self.log_text.see(Tk.END)
+                self.log_text.see(tk.END)  # Change Tk.END to tk.END
             except queue.Empty:
                 break
         if self.window:
@@ -142,8 +145,21 @@ class ConfiguracoesServidor:
         self.config['server_name'] = self.name_entry.get()
         self.config['min_ram'] = self.min_ram_entry.get()
         self.config['max_ram'] = self.max_ram_entry.get()
+        self.config['host_ip'] = self.host_ip_entry.get()
+        self.config['tunnel_address'] = self.tunnel_address_entry.get()
         self.save_config()
         self.log_queue.put("Configurações salvas com sucesso!\n")
+
+    def auto_fill_ip(self):
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+        self.host_ip_entry.delete(0, tk.END)
+        self.host_ip_entry.insert(0, ip_address)
+        self.log_queue.put("IP da máquina preenchido automaticamente.\n")
+
+    def configure_tunnel(self):
+        self.log_queue.put("Configuração do túnel chamada.\n")
+        # Placeholder for tunnel configuration logic
 
     def on_closing(self):
         if self.server_process and self.server_process.poll() is None:
@@ -161,8 +177,15 @@ class ConfiguracoesServidor:
         self.window.geometry("600x700")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+        notebook = ttk.Notebook(self.window)
+        notebook.pack(expand=True, fill='both', padx=10, pady=5)
+
+        # Tab Configurações do Servidor
+        server_frame = ttk.Frame(notebook, padding=10)
+        notebook.add(server_frame, text='Servidor Minecraft')
+
         # Frame principal
-        main_frame = ttk.Frame(self.window, padding="10")
+        main_frame = ttk.Frame(server_frame, padding="10")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
         # Configurações básicas
@@ -229,6 +252,43 @@ class ConfiguracoesServidor:
         # Configurar grid
         self.window.columnconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
+
+        # Iniciar atualização do log
+        self.update_log()
+
+        # Tab Configurações do Host
+        host_frame = ttk.Frame(notebook, padding=10)
+        notebook.add(host_frame, text='Configurações do Host')
+
+        ttk.Label(host_frame, text="Configurações do Host", font=('', 12, 'bold')).grid(row=0, column=0, columnspan=2, pady=10)
+
+        # IP da Máquina
+        ttk.Label(host_frame, text="IP da Máquina:").grid(row=1, column=0, sticky=tk.W)
+        self.host_ip_entry = ttk.Entry(host_frame, width=40)
+        self.host_ip_entry.insert(0, self.config.get('host_ip', ''))
+        self.host_ip_entry.grid(row=1, column=1, sticky=tk.W)
+
+        ttk.Button(host_frame, text="Preencher IP", command=self.auto_fill_ip).grid(row=1, column=2, padx=5)
+
+        # Endereço do Túnel
+        ttk.Label(host_frame, text="Endereço do Túnel:").grid(row=2, column=0, sticky=tk.W)
+        self.tunnel_address_entry = ttk.Entry(host_frame, width=40)
+        self.tunnel_address_entry.insert(0, self.config.get('tunnel_address', ''))
+        self.tunnel_address_entry.grid(row=2, column=1, sticky=tk.W)
+
+        ttk.Button(host_frame, text="Configurar Túnel", command=self.configure_tunnel).grid(row=2, column=2, padx=5)
+
+        # Log
+        ttk.Label(host_frame, text="Log do Host", font=('', 12, 'bold')).grid(row=3, column=0, columnspan=2, pady=10)
+        
+        self.host_log_text = scrolledtext.ScrolledText(host_frame, height=15, width=70)
+        self.host_log_text.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E))
+
+        # Botões de controle
+        control_frame = ttk.Frame(host_frame)
+        control_frame.grid(row=5, column=0, columnspan=3, pady=10)
+        
+        ttk.Button(control_frame, text="Salvar Configurações", command=self.save_settings).pack(side=tk.LEFT, padx=5)
 
         # Iniciar atualização do log
         self.update_log()
