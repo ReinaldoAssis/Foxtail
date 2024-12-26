@@ -1,5 +1,5 @@
 import tkinter as tk
-from tinydb import TinyDB
+from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
 
 from ConfiguracoesServidor import ConfiguracoesServidor
@@ -52,20 +52,30 @@ class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Foxtail")
-        
+
         self.width = 1200
         self.height = 720
         x = (self.winfo_screenwidth() - self.width) // 2
         y = (self.winfo_screenheight() - self.height) // 2
         self.geometry(f'{self.width}x{self.height}+{x}+{y}')
-        
+
         self.db = TinyDB('db.json')
         self.setup_ui()
         self.plugins = {}
         self.rotinas = {}
         self.relatorios = {}
+        self.version = "dev241226"
+        query = Query()
+        self.db.upsert({"version": self.version}, query.version == self.version)
         # self.load_plugins()
         
+    # implement function to read https://github.com/ReinaldoAssis/Foxtail/blob/main/db.json and
+    # get the "version" value, compare with the current version and if it is different
+    # make a pop up appear with a message asking if the user wants to update, if the user
+    # agrees a progress bar should appear and a thread will download to the current directory the latest release
+    # from the github (.exe if on windows and different if on mac)
+    # when completed a process should be schedule to close the current version, delete it and open the new one
+
     def setup_ui(self):
         configServer = ConfiguracoesServidor(self)
         configMine = ConfiguracoesMinecraft(self)
