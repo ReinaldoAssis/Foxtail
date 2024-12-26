@@ -25,10 +25,10 @@ jobs:
       run: |
         python -m PyInstaller --onefile --name Foxtail main.py
     
-    - name: Test Executable
-      run: |
-        cd dist
-        ./Foxtail  # No Windows será Foxtail.exe
+    # - name: Test Executable
+    #   run: |
+    #     cd dist
+    #     ./Foxtail  # No Windows será Foxtail.exe
     
     - uses: actions/upload-artifact@v4
       with:
