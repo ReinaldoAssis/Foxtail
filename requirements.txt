@@ -1,3 +1,2 @@
 tinydb
 Pillow
-tkinter
