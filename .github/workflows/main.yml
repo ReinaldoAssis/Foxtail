@@ -1,0 +1,36 @@
+name: Build Python Executable
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        
+    - run: pip install -r requirements.txt pyinstaller
+    
+    - name: Build Executable
+      run: |
+        python -m PyInstaller --onefile --name Foxtail main.py
+    
+    - name: Test Executable
+      run: |
+        cd dist
+        ./Foxtail  # No Windows será Foxtail.exe
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: executavel-${{ matrix.os }}
+        path: dist/*
