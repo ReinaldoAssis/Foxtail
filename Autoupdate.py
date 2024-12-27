@@ -154,7 +154,7 @@ import os
 import time
 import subprocess
 
-time.sleep(5)  # Wait for main app to close
+time.sleep(10)  # Wait for main app to close
 try:
     os.remove("{current_exec}")  # Remove old version
     os.rename("{new_file}", "{current_exec}")  # Rename new version
