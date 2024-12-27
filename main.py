@@ -1,7 +1,10 @@
 import threading
+from time import sleep
 import tkinter as tk
 from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
+import os
+import urllib.request
 
 from Autoupdate import AutoUpdater
 from ConfiguracoesServidor import ConfiguracoesServidor
@@ -66,7 +69,7 @@ class MainApplication(tk.Tk):
         self.plugins = {}
         self.rotinas = {}
         self.relatorios = {}
-        self.version = "dev241226"
+        self.version = "dev241227"
         query = Query()
         self.db.upsert({"version": self.version}, query.version == self.version)
         # self.load_plugins()
@@ -82,8 +85,20 @@ class MainApplication(tk.Tk):
     # when completed a process should be schedule to close the current version, delete it and open the new one
 
     def setup_ui(self):
+        # Check for 'bin' directory and 'background.png' file
+        bin_dir = 'bin'
+        bg_image_path = os.path.join(bin_dir, 'background.png')
+        if not os.path.exists(bin_dir):
+            os.makedirs(bin_dir)
+        if not os.path.exists(bg_image_path):
+            url = 'https://github.com/ReinaldoAssis/Foxtail/blob/main/background.png?raw=true'
+            urllib.request.urlretrieve(url, bg_image_path)
+            sleep(2)
+
         configServer = ConfiguracoesServidor(self)
         configMine = ConfiguracoesMinecraft(self)
+
+        
 
         # Menu
         self.menubar = tk.Menu(self)
@@ -99,7 +114,7 @@ class MainApplication(tk.Tk):
 
         # Background
         try:
-            self.bg_image = Image.open("background.png")
+            self.bg_image = Image.open("./bin/background.png")
             self.bg_image = self.bg_image.resize((self.width, self.height))  # Ajuste o tamanho do fundo para 1024x720
             self.bg_photo = ImageTk.PhotoImage(self.bg_image)
             self.bg_label = tk.Label(self.main_container, image=self.bg_photo)
