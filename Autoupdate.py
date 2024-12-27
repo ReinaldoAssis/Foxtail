@@ -37,9 +37,9 @@ class AutoUpdater:
             # The version is stored in _default.1.version in your db.json
             self.new_version = content.get('_default', {}).get('1', {}).get('version')
             
-            # if self.new_version and self.new_version != self.current_version:
+            if self.new_version and self.new_version != self.current_version:
             # TODO: remove in production
-            if True:
+            # if True:
                 self._prompt_update()
                 
         except Exception as e:
