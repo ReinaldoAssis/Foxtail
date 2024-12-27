@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['windows-latest']#, 'ubuntu-latest', 'macos-latest']
+        os: ['windows-latest']
         
     steps:
     - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
     
     - name: Build Executable
       run: |
-        python -m PyInstaller --onefile --name Foxtail main.py
+        python -m PyInstaller --onefile --noconsole --name Foxtail main.py
     
     - uses: actions/upload-artifact@v4
       with:
@@ -35,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/download-artifact@v4
       with:
         path: ./artifacts
@@ -44,10 +46,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v1.0.${{ github.run_number }}
         name: "Release v1.0.${{ github.run_number }}"
-        body: |
-          ## Changelog
-          - Compilação automática do executável.
-          - Inclui suporte para Windows, macOS e Linux.
+        generateReleaseNotes: true
         draft: false
         prerelease: false
         artifacts: "./artifacts/**/*"
