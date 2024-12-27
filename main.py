@@ -71,7 +71,7 @@ class MainApplication(tk.Tk):
         self.relatorios = {}
         self.version = "dev241227"
         query = Query()
-        self.db.upsert({"version": self.version}, query.version == self.version)
+        self.db.update({"version": self.version}, query.version.exists())
         # self.load_plugins()
 
         self.updater = AutoUpdater(self.version, self)
