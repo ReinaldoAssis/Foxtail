@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['windows-latest'] # , 'ubuntu-latest', 'macos-latest'
+        os: ['windows-latest'] #, 'ubuntu-latest', 'macos-latest']
         
     steps:
     - uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
       run: |
         python -m PyInstaller --onefile --name Foxtail main.py
     
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4  # Certifique-se de usar a mesma versão
       with:
         name: executavel-${{ matrix.os }}
         path: dist/*
@@ -38,9 +38,8 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4  # Alinhado com a versão do upload
       with:
-        name: executavel-${{ matrix.os }}
         path: ./artifacts
 
     - name: Create Release
@@ -48,7 +47,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v1.0.${{ github.run_number }}
-        release_name: "Release v0.0.${{ github.run_number }}-dev"
+        release_name: "Release v1.0.${{ github.run_number }}"
         body: |
           ## Changelog
           - Compilação automática do executável.
