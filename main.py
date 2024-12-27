@@ -69,7 +69,7 @@ class MainApplication(tk.Tk):
         self.plugins = {}
         self.rotinas = {}
         self.relatorios = {}
-        self.version = "dev241227"
+        self.version = "dev241226"
         query = Query()
         self.db.update({"version": self.version}, query.version.exists())
         # self.load_plugins()
