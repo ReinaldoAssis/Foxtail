@@ -25,7 +25,7 @@ jobs:
       run: |
         python -m PyInstaller --onefile --name Foxtail main.py
     
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       with:
         name: executavel-${{ matrix.os }}
         path: dist/*
