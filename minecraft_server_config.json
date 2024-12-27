@@ -1,8 +1,0 @@
-{
-    "server_ip": "localhost",
-    "server_port": "25565",
-    "server_name": "Minecraft Server",
-    "jar_path": "",
-    "min_ram": "1G",
-    "max_ram": "4G"
-}

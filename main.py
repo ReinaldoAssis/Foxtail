@@ -1,7 +1,9 @@
+import threading
 import tkinter as tk
 from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
 
+from Autoupdate import AutoUpdater
 from ConfiguracoesServidor import ConfiguracoesServidor
 from ConfiguracoesMinecraft import ConfiguracoesMinecraft
 
@@ -64,10 +66,13 @@ class MainApplication(tk.Tk):
         self.plugins = {}
         self.rotinas = {}
         self.relatorios = {}
-        self.version = "dev241226"
+        self.version = "dev241227"
         query = Query()
         self.db.upsert({"version": self.version}, query.version == self.version)
         # self.load_plugins()
+
+        self.updater = AutoUpdater(self.version, self)
+        threading.Thread(target=self.updater.check_for_updates, daemon=True).start()
         
     # implement function to read https://github.com/ReinaldoAssis/Foxtail/blob/main/db.json and
     # get the "version" value, compare with the current version and if it is different
