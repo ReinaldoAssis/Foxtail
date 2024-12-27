@@ -1,16 +1,14 @@
 name: Build Python Executable
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: ['windows-latest'] #, 'ubuntu-latest', 'macos-latest']
+        os: ['windows-latest']#, 'ubuntu-latest', 'macos-latest']
         
     steps:
     - uses: actions/checkout@v2
@@ -25,33 +23,31 @@ jobs:
       run: |
         python -m PyInstaller --onefile --name Foxtail main.py
     
-    - uses: actions/upload-artifact@v4  # Certifique-se de usar a mesma versão
+    - uses: actions/upload-artifact@v4
       with:
         name: executavel-${{ matrix.os }}
         path: dist/*
         
   release:
     needs: build
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4  # Alinhado com a versão do upload
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v4
       with:
         path: ./artifacts
-
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v1.0.${{ github.run_number }}
-        release_name: "Release v1.0.${{ github.run_number }}"
+        name: "Release v1.0.${{ github.run_number }}"
         body: |
           ## Changelog
           - Compilação automática do executável.
           - Inclui suporte para Windows, macOS e Linux.
         draft: false
         prerelease: false
-        artifacts: ./artifacts/*
+        artifacts: "./artifacts/**/*"
